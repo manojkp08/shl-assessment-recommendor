@@ -1,0 +1,21 @@
+# Core
+fastapi==0.109.1
+uvicorn==0.27.0
+python-multipart==0.0.6  # For file uploads in FastAPI
+
+# LLM + RAG
+google-generativeai==0.3.2  # Gemini API
+chromadb==0.4.22            # Vector DB for RAG
+sentence-transformers==2.2.2  # (Optional) Local embeddings as fallback
+
+# Web/Scraping
+streamlit==1.32.0
+beautifulsoup4==4.12.2
+newspaper3k==0.2.8          # For JD URL text extraction
+requests==2.31.0
+
+# Utilities
+pydantic==2.6.1             # Data validation
+tqdm==4.66.1                # Progress bars for scraping
+numpy==1.26.3               # For embeddings
+python-dotenv==1.0.0        # For API keys (`.env`)
