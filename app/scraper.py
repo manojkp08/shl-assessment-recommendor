@@ -3,6 +3,9 @@ from bs4 import BeautifulSoup
 import requests
 from urllib.parse import urljoin
 import time
+import warnings
+warnings.filterwarnings("ignore")
+
 
 def scrape_shl_catalog():
     BASE_URL = "https://www.shl.com"

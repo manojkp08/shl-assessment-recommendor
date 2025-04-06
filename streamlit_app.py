@@ -137,6 +137,9 @@ from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunct
 # Load environment variables
 load_dotenv()
 
+os.environ["STREAMLIT_SERVER_FILEWATCHER_TYPE"] = "none"
+
+
 # Minimalist Professional Config
 st.set_page_config(
     page_title="SHL Assessment Recommender",
