@@ -1,6 +1,7 @@
 # Core
 fastapi==0.109.1
 uvicorn==0.27.0
+gunicorn>=20.0.0
 python-multipart==0.0.6  # For file uploads in FastAPI
 
 # LLM + RAG

@@ -2,8 +2,10 @@ services:
   - type: web
     name: shl-recommender-api
     runtime: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn api:app --host 0.0.0.0 --port 10000
+    buildCommand: |
+      pip install -r requirements.txt
+    startCommand: |
+      uvicorn api:app --host 0.0.0.0 --port 10000
     envVars:
       - key: COHERE_API_KEY
         value: EwppwokBPu8OO15mPB8Kei6o0KNjgXgYlPTopdqj

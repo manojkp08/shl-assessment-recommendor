@@ -31,6 +31,13 @@ chroma_client = chromadb.PersistentClient(path="chroma_db")
 chroma_client = chromadb.Client()
 collection = chroma_client.create_collection("shl_assessments")
 
+import threading
+import requests
+def ping():
+    threading.Timer(600, ping).start()  # Ping every 10 mins
+    requests.get("https://shl-assessment-recommendor.onrender.com/recommend", timeout=5)
+ping()
+
 class QueryRequest(BaseModel):
     text: str  # Can be a prompt OR job URL
     use_ai: bool = True  # Toggle for AI insights
