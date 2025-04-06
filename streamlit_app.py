@@ -68,9 +68,8 @@ with st.sidebar:
     st.markdown("""
     **About Relevance Scores**  
     Lower scores indicate better matches:  
-    - 🔥 < 0.3: Excellent match  
-    - ✅ 0.3-0.6: Good match  
-    - ⚠️ > 0.6: Weak match  
+    - 🔥 < 1.0: Excellent match  
+    - ✅ 1.0: Good match  
     """)
 
 # ---- Search ----
