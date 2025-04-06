@@ -61,7 +61,7 @@ with st.sidebar:
     with st.expander("Advanced"):
         api_url = st.text_input(
             "API URL",
-            value="http://localhost:8000/recommend"
+            value="https://shl-assessment-recommendor.onrender.com/recommend"
         )
     
     st.markdown("---")
