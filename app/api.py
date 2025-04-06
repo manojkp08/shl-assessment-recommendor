@@ -68,6 +68,11 @@ def generate_cohere_insights(name: str, description: str) -> str:
     except Exception as e:
         return "AI insights unavailable (limit reached)"
 
+
+@app.get("/")
+async def health_check():
+    return {"status": "API is running"}
+
 @app.post("/recommend")
 async def recommend(request: QueryRequest):
     try:
