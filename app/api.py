@@ -26,10 +26,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-chroma_client = chromadb.PersistentClient(path="chroma_db")
+chroma_client = chromadb.PersistentClient(path="app/chroma_db")
 
-chroma_client = chromadb.Client()
-collection = chroma_client.create_collection("shl_assessments")
+# chroma_client = chromadb.Client()
+# collection = chroma_client.create_collection("shl_assessments")
 
 import threading
 import requests
