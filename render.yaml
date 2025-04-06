@@ -5,7 +5,9 @@ services:
     buildCommand: |
       pip install -r requirements.txt
     startCommand: |
-      uvicorn api:app --host 0.0.0.0 --port 10000
+      ./start.sh
     envVars:
       - key: COHERE_API_KEY
         value: EwppwokBPu8OO15mPB8Kei6o0KNjgXgYlPTopdqj
+      - key: PORT
+        value: 10000
