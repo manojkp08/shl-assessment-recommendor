@@ -5,6 +5,7 @@ from pydantic import BaseModel
 import chromadb
 from bs4 import BeautifulSoup
 import requests
+from fastapi.middleware.cors import CORSMiddleware
 import cohere
 from dotenv import load_dotenv
 import os
@@ -19,7 +20,13 @@ except:
     co = None
 
 app = FastAPI()
-chroma_client = chromadb.PersistentClient(path="app/chroma_db")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Adjust this to your Streamlit app's URL for security
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+chroma_client = chromadb.PersistentClient(path="chroma_db")
 
 class QueryRequest(BaseModel):
     text: str  # Can be a prompt OR job URL
@@ -69,10 +76,6 @@ def generate_cohere_insights(name: str, description: str) -> str:
         return "AI insights unavailable (limit reached)"
 
 
-@app.get("/")
-async def health_check():
-    return {"status": "API is running"}
-
 @app.post("/recommend")
 async def recommend(request: QueryRequest):
     try:
@@ -111,3 +114,5 @@ async def recommend(request: QueryRequest):
         recommendations.append(item)
 
     return recommendations
+
+
