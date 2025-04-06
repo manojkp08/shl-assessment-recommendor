@@ -19,6 +19,7 @@ pydantic==2.6.1             # Data validation
 tqdm==4.66.1                # Progress bars for scraping
 numpy==1.26.3               # For embeddings
 python-dotenv==1.0.0        # For API keys (`.env`)
+pysqlite3                   # For SQLite DB
 
 streamlit-lottie 
 streamlit-extras 
