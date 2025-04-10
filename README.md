@@ -40,7 +40,7 @@ AI-driven recommender that scrapes SHL's catalog, embeds descriptions via NLP, r
 
 ## 🧠 Challenges & Solutions
 
-* SHL's inconsistent HTML → Multi-method scraping
+* Multi-Level scraping
 * Cohere's free-tier limits → Token capping
 * ChromaDB path errors → Absolute paths in production
 
