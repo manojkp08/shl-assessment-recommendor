@@ -1,5 +1,5 @@
 import json
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 import requests
 from urllib.parse import urljoin
 import time
@@ -66,8 +66,28 @@ def scrape_shl_catalog():
                 link = cols[0].find("a")
                 if not link:
                     continue
-                    
-                # Clean URL (your existing logic)
+                
+                # Check for adaptive/IRT support from catalog table
+                adaptive_support = "❓"
+                adaptive_cell = row.select_one("td.adaptive-support") or row.select_one("td:nth-child(3)")
+                if adaptive_cell:
+                    # Look for green dot or indicator
+                    green_dot = adaptive_cell.select_one('svg.green, span.green-circle, .green-dot')
+                    if green_dot or ("green" in str(adaptive_cell).lower()):
+                        adaptive_support = "🟢"  # Green circle emoji
+                    else:
+                        adaptive_support = "🔴"  # Red circle emoji
+    
+                # Alternative check for text that might indicate support
+                adaptive_text = row.find(string=lambda x: x and "Adaptive" in x or "IRT" in x)
+                if adaptive_text and adaptive_support == "❓":
+                    parent_element = adaptive_text.parent
+                    if "supported" in str(parent_element).lower() or "yes" in str(parent_element).lower():
+                        adaptive_support = "🟢"
+                    elif "not supported" in str(parent_element).lower() or "no" in str(parent_element).lower():
+                        adaptive_support = "🔴"
+            
+                # Clean URL
                 assessment_url = urljoin(BASE_URL, link["href"].strip())
                 if "solutions/products/product-catalog/solutions/products" in assessment_url:
                     assessment_url = assessment_url.replace(
@@ -75,7 +95,6 @@ def scrape_shl_catalog():
                         "solutions/products"
                     )
                 
-                # Your existing description scraping logic ▼
                 try:
                     print(f"📄 Tab {tab_num}: Fetching ({i}/{len(rows)}) {assessment_url}")
                     assessment_response = requests.get(
@@ -85,6 +104,21 @@ def scrape_shl_catalog():
                     )
                     assessment_soup = BeautifulSoup(assessment_response.text, 'html.parser')
                     
+                    # Initialize all fields with default values
+                    assessment_data = {
+                        "name": link.get_text(strip=True),
+                        "url": assessment_url,
+                        "adaptive/irt_support": adaptive_support,
+                        "description": "Description unavailable",
+                        "duration": "Duration not specified",
+                        "languages": [],
+                        "job_level": "Level not specified",
+                        "remote_testing": "Remote testing not specified",
+                        "test_type": "Type not specified",
+                        "source_tab": tab_num
+                    }
+                    
+                    # DESCRIPTION SCRAPING
                     description = ""
                     
                     # Method 1: Try finding the description under a heading element
@@ -133,22 +167,80 @@ def scrape_shl_catalog():
                         unwanted_keywords = ["Contact", "Practice Tests", "Support", "Login", "Buy Online", "Book a Demo"]
                         for keyword in unwanted_keywords:
                             description = description.replace(keyword, "")
-                        
-                        assessments.append({
-                            "name": link.get_text(strip=True),
-                            "url": assessment_url,
-                            "description": description.strip() or "Description unavailable",
-                            "source_tab": tab_num  # Track which tab it came from
-                        })
-                    else:
-                        assessments.append({
-                            "name": link.get_text(strip=True),
-                            "url": assessment_url,
-                            "description": "Description unavailable",
-                            "source_tab": tab_num
-                        })
+                        assessment_data["description"] = description.strip()
                     
-                    time.sleep(1.5)  # Slightly reduced delay for bulk scraping
+                    # NEW FIELDS SCRAPING
+                    
+                    # 1. Find all specification sections
+                    spec_sections = assessment_soup.find_all(lambda tag: tag.name in ['div', 'section'] and 
+                                                           'specification' in ' '.join(tag.get('class', [])).lower())
+                    
+                    # 2. Alternative: Look for headings that might contain these fields
+                    for heading in assessment_soup.find_all(['h2', 'h3', 'h4']):
+                        heading_text = heading.get_text(strip=True).lower()
+                        next_sibling = heading.find_next_sibling()
+                        
+                        # Duration
+                        if 'assessment length' in heading_text or 'duration' in heading_text:
+                            duration_text = next_sibling.get_text(strip=True) if next_sibling else ""
+                            if 'minutes' in duration_text.lower():
+                                assessment_data["duration"] = duration_text
+                        
+                        # Languages
+                        elif 'languages' in heading_text:
+                            languages_text = next_sibling.get_text(strip=True) if next_sibling else ""
+                            assessment_data["languages"] = [lang.strip() for lang in languages_text.split(',') if lang.strip()]
+                        
+                        # Job Level
+                        elif 'job levels' in heading_text or 'job level' in heading_text:
+                            job_level_text = next_sibling.get_text(strip=True) if next_sibling else ""
+                            assessment_data["job_level"] = job_level_text
+                        
+                        # 3. For Remote Testing (green dot)
+                        remote_testing_text = assessment_soup.find(string=lambda x: x and "Remote Testing:" in x)
+                        if remote_testing_text:
+                            parent_element = remote_testing_text.parent
+                            green_dot = None
+                            
+                            # Try looking for a circle element after the text
+                            green_dot = parent_element.find_next('svg') or parent_element.find_next('span', class_=lambda x: x and ('circle' in x or 'dot' in x))
+                            
+                            # If not found, try looking for any element with green color
+                            if not green_dot:
+                                green_dot = parent_element.find_next(attrs={'style': lambda x: x and 'green' in x.lower()})
+                            
+                            # If not found, try looking for elements with specific classes
+                            if not green_dot:
+                                green_dot = assessment_soup.select_one('span.green-circle, circle.green, .green-dot, .status-green')
+                            
+                            # Check if anything green was found
+                            if green_dot:
+                                assessment_data["remote_testing"] = "🟢"  # Green circle emoji
+                            else:
+                                assessment_data["remote_testing"] = "🔴"  # Red circle emoji
+                        else:
+                            assessment_data["remote_testing"] = "❓"  # Question mark if section not found
+
+                        # 4. For Test Type (A B P format)
+                        test_type_element = assessment_soup.find(string=lambda x: "Test Type:" in x if x else False)
+                        if test_type_element:
+                            # Look for the subsequent elements containing the test type letters
+                            test_type_container = test_type_element.parent.find_next('span') or test_type_element.find_next_sibling()
+                            if test_type_container:
+                                test_type_text = test_type_container.get_text(strip=True)
+                                assessment_data["test_type"] = test_type_text
+                            else:
+                                # Alternative approach - get all letters that follow the "Test Type:" text
+                                next_element = test_type_element.next_sibling
+                                test_type_letters = []
+                                while next_element and not isinstance(next_element, Tag) and not "Remote Testing" in str(next_element):
+                                    if next_element.strip():
+                                        test_type_letters.append(next_element.strip())
+                                    next_element = next_element.next_sibling
+                                assessment_data["test_type"] = " ".join(test_type_letters) if test_type_letters else "Not found"
+                    
+                    assessments.append(assessment_data)
+                    time.sleep(1.5)
                 
                 except Exception as e:
                     print(f"⚠️ Tab {tab_num}: Failed to scrape {assessment_url}: {str(e)}")
@@ -160,13 +252,12 @@ def scrape_shl_catalog():
                     })
             
             print(f"✅ Tab {tab_num} completed")
-            time.sleep(2)  # Delay between tabs
+            time.sleep(2)
             
         except Exception as e:
             print(f"❌ Tab {tab_num} failed: {str(e)}")
             continue
     
-    # Save final data
     with open("data/shl_assessments_complete.json", "w") as f:
         json.dump(assessments, f, indent=2)
         

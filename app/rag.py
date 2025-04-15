@@ -4,7 +4,6 @@ import json
 import os
 from pathlib import Path
 from typing import List
-import numpy as np
 
 class ChromaEmbeddingFunction:
     def __init__(self):
@@ -13,6 +12,12 @@ class ChromaEmbeddingFunction:
     def __call__(self, input: List[str]) -> List[List[float]]:
         embeddings = self._model.encode(input)
         return [embedding.tolist() for embedding in embeddings]
+    
+
+def stringify(value):
+    if isinstance(value, list):
+        return ", ".join(map(str, value))
+    return value
 
 def create_vector_db():
     # Initialize ChromaDB with explicit path
@@ -42,16 +47,22 @@ def create_vector_db():
             print(f"⚠️ Skipping invalid item at index {i}")
             continue
             
-        required_fields = ["name", "url", "description"]
+        required_fields = ["name", "url", "description", "duration", "languages", "job_level", "remote_testing", "adaptive/irt_support", "test_type"]
         if not all(field in item for field in required_fields):
             print(f"⚠️ Skipping incomplete item at index {i}")
             continue
             
-        documents.append(f"{item['name']}: {item['description']}")
+        documents.append(f"{item['name']}: {item['description']}: {item['url']}: {item['duration']}: {item['languages']}: {item['job_level']}: {item['remote_testing']}: {item['adaptive/irt_support']}: {item['test_type']}")
         metadatas.append({
             "name": item["name"],
             "url": item["url"],
-            "description": item["description"]
+            "description": item["description"],
+            "duration": item["duration"],
+            "languages": stringify(item["languages"]),
+            "job_level": item["job_level"],
+            "remote_testing": item["remote_testing"],
+            "adaptive/irt_support": item["adaptive/irt_support"],
+            "test_type": item["test_type"]
         })
 
     if not documents:
