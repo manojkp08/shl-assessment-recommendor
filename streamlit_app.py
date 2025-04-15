@@ -63,7 +63,7 @@ with st.sidebar:
     with st.expander("🔧 Advanced Settings"):
         api_url = st.text_input(
             "API Endpoint",
-            value="https://shl-assessment-recommendor.onrender.com/recommend"
+            value="https://shl-assessment-recommendor.onrender.com/recommend",
         )
     
     st.markdown("---")
@@ -102,7 +102,7 @@ if st.button("Find Assessments", type="primary") and query:
                     url = item.get('url', '#')
                     score = item.get('score', 1.0)
                     duration = item.get('duration', 'Not specified')
-                    languages = ', '.join(item.get('languages', [])) or 'Not specified'
+                    languages = ''.join(item.get('languages', [])) or 'Not specified'
                     job_level = item.get('job_level', 'Not specified')
                     remote_testing = item.get('remote_testing', '❓')
                     adaptive_support = item.get('adaptive_support', item.get('adaptive/irt_support', '❓'))
