@@ -67,6 +67,12 @@ AI-driven recommender that scrapes SHL's catalog, embeds descriptions via NLP, r
 ### UI
 **Demo:** [https://shl-assessment-recommendor-v75xtfd7tsh3rxqucbedlk.streamlit.app/](https://shl-assessment-recommendor-v75xtfd7tsh3rxqucbedlk.streamlit.app/)
 
+## Screenshorts
+![Screenshot from 2025-04-16 00-52-55](https://github.com/user-attachments/assets/c451f577-0c92-4f63-8fc8-d578cf57d7af)
+![Screenshot from 2025-04-16 01-26-29](https://github.com/user-attachments/assets/3082a955-1450-4ed4-9864-752ae01ac6e2)
+![Screenshot from 2025-04-16 01-26-34](https://github.com/user-attachments/assets/b308180b-ae17-4785-a5e4-c42703bff32e)
+![Screenshot from 2025-04-16 01-26-46](https://github.com/user-attachments/assets/0141aaff-a5ef-44c4-a226-b4757abc4916)
+
 ## 💥 Impact
 * 80% reduction in HR effort
 * Globally scalable
