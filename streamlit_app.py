@@ -78,7 +78,7 @@ with st.sidebar:
 
 # Main Content
 query = st.text_input(
-    "🔍 Describe the role or paste job URL:",
+    "🔍 Describe the role:",
     placeholder="e.g. 'Mid-level account manager with client experience'"
 )
 
