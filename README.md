@@ -68,10 +68,12 @@ AI-driven recommender that scrapes SHL's catalog, embeds descriptions via NLP, r
 **Demo:** [https://shl-assessment-recommendor-v75xtfd7tsh3rxqucbedlk.streamlit.app/](https://shl-assessment-recommendor-v75xtfd7tsh3rxqucbedlk.streamlit.app/)
 
 ## Screenshorts
-![Screenshot from 2025-04-16 00-52-55](https://github.com/user-attachments/assets/c451f577-0c92-4f63-8fc8-d578cf57d7af)
-![Screenshot from 2025-04-16 01-26-29](https://github.com/user-attachments/assets/3082a955-1450-4ed4-9864-752ae01ac6e2)
-![Screenshot from 2025-04-16 01-26-34](https://github.com/user-attachments/assets/b308180b-ae17-4785-a5e4-c42703bff32e)
-![Screenshot from 2025-04-16 01-26-46](https://github.com/user-attachments/assets/0141aaff-a5ef-44c4-a226-b4757abc4916)
+![Screenshot from 2025-04-23 19-25-02](https://github.com/user-attachments/assets/1d0fba8d-a9c9-452a-866c-074d5f5f54f9)
+![Screenshot from 2025-04-23 19-26-32](https://github.com/user-attachments/assets/d5096379-bf9e-4c70-a8c5-73bb12d71a45)
+![Screenshot from 2025-04-23 19-26-35](https://github.com/user-attachments/assets/b46750a5-1e9e-4812-834b-54eff022ea7d)
+![Screenshot from 2025-04-23 19-26-40](https://github.com/user-attachments/assets/a34065b3-447d-4218-8ee5-f73a0bc0ef8c)
+![Screenshot from 2025-04-23 19-26-47](https://github.com/user-attachments/assets/b899facc-9169-45e1-b431-7070dbdcba7c)
+
 
 ## 💥 Impact
 * 80% reduction in HR effort
